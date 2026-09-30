@@ -1,0 +1,28 @@
+name: Atualizar candidatos (TSE)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *" # a cada 6 horas
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Baixar candidatos de SP do TSE
+        run: node scripts/sync-candidates.mjs
+      - name: Salvar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          if git diff --cached --quiet; then echo "Sem mudanças"; exit 0; fi
+          git commit -m "Atualiza base de candidatos (TSE)"
+          git push
