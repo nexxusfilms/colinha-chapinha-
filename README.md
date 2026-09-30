@@ -1,9 +1,34 @@
-# Colinha – Chapinha da Vela 15026
+# Minha Colinha 2026 — Chapinha da Vela
 
-Colinha eleitoral (página estática) do **Chapinha da Vela – 15026 – Deputado Estadual SP – MDB**.
+Ferramenta para o eleitor montar a colinha das Eleições 2026 (SP), com a identidade do **Chapinha da Vela — Deputado Estadual**.
+Next.js + React + TypeScript + Tailwind + Lucide + html-to-image.
 
-- `index.html`: página única, sem build. É só publicar a pasta (Vercel, Netlify, GitHub Pages).
-- `foto.jpg`: coloque a foto do candidato com este nome na mesma pasta. Enquanto não existir, aparece a vela.
-- Antes de divulgar, preencha `cnpj` (e `coligacao`, se houver) no objeto `CAMPANHA` no topo do `<script>`. O rodapé de propaganda eleitoral usa esses dados.
+## Rodar
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # sincroniza candidatos com o TSE (se possível) e gera o build
+```
+Na Vercel: importar o repositório (framework **Next.js**), sem configuração extra.
 
-Funções: número em destaque, simulador de urna, colinha completa na ordem de votação (salva no celular), impressão A4 com 6 colinhas recortáveis, e botões de compartilhar no WhatsApp e copiar link.
+## Onde trocar os dados da campanha
+| O quê | Arquivo |
+|---|---|
+| Número, partido, nome, CNPJ, redes, textos de SEO | `config/campaign.ts` |
+| Candidatos cadastrados à mão e botão "Preencher candidatos sugeridos" | `config/candidates.ts` |
+| Foto (PNG transparente, meio corpo) | `public/images/chapinha.png` |
+| Rosto (cards e urna) | `public/images/chapinha-rosto.png` |
+| Logo azul / logo branco | `public/images/logo-chapinha.png`, `public/images/logo-chapinha-branco.png` |
+| Imagem de compartilhamento (1200×630) | `public/og-image.jpg` |
+| Ícone da aba | `app/icon.png` |
+
+## Base de candidatos (busca por número)
+`scripts/sync-candidates.mjs` baixa a lista oficial do **TSE (DivulgaCandContas)**, a mesma fonte usada por portais como O Tempo,
+e grava `public/data/candidatos-sp-2026.json`. Roda automaticamente no `npm run build` (se o TSE não responder, mantém a base atual).
+Manual: `npm run sync:candidatos`.
+
+## Privacidade
+- A busca por número acontece no navegador, contra um JSON estático: nenhum número digitado é enviado a servidor.
+- A colinha fica só no `localStorage` do aparelho; "Limpar colinha" apaga tudo.
+- `lib/analytics.ts` só registra eventos genéricos (abertura, download, impressão, compartilhamento), nunca números.
+- Compartilhar envia apenas o link da ferramenta.
