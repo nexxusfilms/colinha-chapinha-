@@ -1,0 +1,33 @@
+name: Testar fontes de candidatos
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testar URLs
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36"
+          for u in \
+            "https://divulgacandcontas.tse.jus.br/divulga/rest/v1/eleicao/ordinarias" \
+            "https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2026.zip" \
+            "https://dadosabertos.tse.jus.br/dataset/candidatos-2026" \
+            "https://www.otempo.com.br/eleicoes/2026/candidatos/sao-paulo/deputado-estadual" \
+            "https://www.otempo.com.br/eleicoes/2026/candidatos/sao-paulo/deputado-estadual/chapinha-da-vela-15026" ; do
+            echo "=== $u"
+            curl -sS -L -A "$UA" -H "Accept: application/json, text/html, */*" -H "Accept-Language: pt-BR" -o /tmp/out -w "HTTP %{http_code} %{size_download} bytes %{content_type}\n" -m 60 "$u" || true
+            head -c 1500 /tmp/out | tr -d '\000' ; echo
+          done
+          echo "=== links O Tempo listagem"
+          curl -sS -L -A "$UA" -m 60 "https://www.otempo.com.br/eleicoes/2026/candidatos/sao-paulo/deputado-estadual" -o /tmp/ot.html || true
+          grep -o 'href="[^"]*deputado-estadual/[^"]*"' /tmp/ot.html | head -20
+          grep -o '__NEXT_DATA__' /tmp/ot.html | head -1
+          grep -o 'page=[0-9]*' /tmp/ot.html | sort -u | head
+          echo "=== pagina Chapinha"
+          curl -sS -L -A "$UA" -m 60 "https://www.otempo.com.br/eleicoes/2026/candidatos/sao-paulo/deputado-estadual/chapinha-da-vela-15026" -o /tmp/ch.html || true
+          grep -o '<title>[^<]*' /tmp/ch.html
+          grep -oi 'MDB[^<]\{0,80\}' /tmp/ch.html | head -5
+          grep -o 'application/ld+json' /tmp/ch.html | head -2
+          grep -o '"@type":"Person"[^}]*' /tmp/ch.html | head -2
