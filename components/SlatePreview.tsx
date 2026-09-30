@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import type { SlateValues } from "@/types/candidate";
 import { slots } from "@/config/candidates";
-import { campaign } from "@/config/campaign";
+import { campaign, legalLine } from "@/config/campaign";
 import { findCandidate, type CandidateDb } from "@/lib/candidates-db";
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 
 /** A colinha em si — é o que vira PNG e o que sai na impressão. */
 const SlatePreview = forwardRef<HTMLDivElement, Props>(function SlatePreview({ values, db, id }, ref) {
-  const { candidate, legal, election } = campaign;
+  const { candidate, election } = campaign;
   return (
     <div
       ref={ref}
@@ -72,8 +72,8 @@ const SlatePreview = forwardRef<HTMLDivElement, Props>(function SlatePreview({ v
           {candidate.publicName}
           {candidate.number ? ` ${candidate.number}` : ""} · {candidate.position} {candidate.state}
           {candidate.party ? ` · ${candidate.party}` : ""}
-          {legal.cnpj ? ` · CNPJ ${legal.cnpj}` : ""}
         </p>
+        {legalLine && <p className="mt-0.5 text-[9px] text-slate-500">{legalLine}</p>}
       </div>
     </div>
   );

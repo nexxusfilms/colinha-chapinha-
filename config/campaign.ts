@@ -37,7 +37,7 @@ export const campaign = {
   },
 
   legal: {
-    cnpj: "", // CNPJ da campanha (obrigatório na propaganda) — preencher
+    cnpj: "68.293.645/0001-01", // CNPJ da campanha (obrigatório na propaganda)
     disclaimer: "", // ex.: coligação/federação, tiragem, etc.
   },
 
@@ -48,5 +48,15 @@ export const campaign = {
     ogImage: "/og-image.jpg",
   },
 } as const;
+
+/** Linha legal da propaganda: "CNPJ: … | ELEIÇÃO 2026 | NOME | CARGO". */
+export const legalLine = campaign.legal.cnpj
+  ? [
+      `CNPJ: ${campaign.legal.cnpj}`,
+      `ELEIÇÃO ${campaign.election.year}`,
+      campaign.candidate.legalName.toUpperCase(),
+      campaign.candidate.position.toUpperCase(),
+    ].join(" | ")
+  : "";
 
 export type Campaign = typeof campaign;

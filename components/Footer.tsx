@@ -1,4 +1,4 @@
-import { campaign } from "@/config/campaign";
+import { campaign, legalLine } from "@/config/campaign";
 
 export default function Footer() {
   const { candidate, legal, social, election } = campaign;
@@ -34,7 +34,7 @@ export default function Footer() {
           <p>
             {candidate.publicName} — {candidate.legalName}
           </p>
-          {legal.cnpj && <p>CNPJ {legal.cnpj}</p>}
+          {legalLine && <p>{legalLine}</p>}
           {legal.disclaimer && <p>{legal.disclaimer}</p>}
         </div>
       </div>
