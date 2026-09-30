@@ -1,72 +1,90 @@
 #!/usr/bin/env node
 /**
- * Baixa a lista oficial de candidatos de SP (Eleições 2026) do DivulgaCandContas (TSE)
- * e grava public/data/candidatos-sp-2026.json — a mesma base que portais como O Tempo usam.
+ * Gera public/data/candidatos-sp-2026.json a partir do arquivo oficial de dados abertos do TSE
+ * (consulta_cand_2026.zip) — a mesma base publicada por portais como O Tempo.
  *
- * A consulta de número acontece no navegador, contra esse JSON estático:
+ * Roda no GitHub Actions (.github/workflows/candidatos.yml), que grava o JSON no repositório.
+ * A busca por número acontece no navegador, contra esse JSON estático:
  * nenhum número digitado pelo eleitor sai do aparelho.
  *
- * Fotos: baixadas só para Senador, Governador e Presidente (poucos candidatos),
- * gravadas em public/data/fotos/. Deputados aparecem sem foto (exceto os configurados
- * manualmente em config/candidates.ts), para manter o site leve.
+ * Fotos: baixadas só para Senador, Governador e Presidente (poucos candidatos) e gravadas
+ * em public/data/fotos/. Deputados aparecem sem foto (exceto os de config/candidates.ts).
  *
- * Uso:  npm run sync:candidatos         (falha se o TSE não responder)
- *       node scripts/sync-candidates.mjs --soft   (usado no build: mantém o JSON atual se falhar)
- *       SKIP_SYNC=1 npm run build        (pula a sincronização)
+ * Requer o comando `unzip` (presente no runner do GitHub Actions).
+ * Uso: node scripts/sync-candidates.mjs [--csv arquivo.csv ...]   (--csv: testar com CSVs locais)
  */
 import { mkdir, writeFile, readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import path from "node:path";
 
-const SOFT = process.argv.includes("--soft");
 const ANO = 2026;
 const UF = "SP";
-const BASE = "https://divulgacandcontas.tse.jus.br/divulga/rest/v1";
-const IMG = "https://divulgacandcontas.tse.jus.br/divulga/rest/arquivo/img";
+const ZIP_URL = `https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_${ANO}.zip`;
+const FOTO_URL = (uf, sq) => `https://eleicoes-api.otempo.com.br/api/photo/${ANO}/fotos/candidatos/${uf}/${sq}.jpg`;
 const OUT = path.join(process.cwd(), "public/data/candidatos-sp-2026.json");
 const FOTOS = path.join(process.cwd(), "public/data/fotos");
 
-const CARGOS = [
-  { db: "presidente", cod: 1, uf: "BR", fotos: true },
-  { db: "governador", cod: 3, uf: UF, fotos: true },
-  { db: "senador", cod: 5, uf: UF, fotos: true },
-  { db: "federal", cod: 6, uf: UF, fotos: false },
-  { db: "estadual", cod: 7, uf: UF, fotos: false },
-];
+// CD_CARGO do TSE → chave da base
+const CARGOS = { 1: "presidente", 3: "governador", 5: "senador", 6: "federal", 7: "estadual" };
+const COM_FOTO = new Set(["presidente", "governador", "senador"]);
 
-async function getJson(url) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(25000), headers: { accept: "application/json" } });
-  if (!res.ok) throw new Error(`${res.status} em ${url}`);
-  return res.json();
-}
-
-async function eleicoes2026() {
-  const lista = await getJson(`${BASE}/eleicao/ordinarias`);
-  const ids = (Array.isArray(lista) ? lista : lista.eleicoes || [])
-    .filter((e) => Number(e.ano) === ANO)
-    .map((e) => String(e.id));
-  if (!ids.length) throw new Error("Nenhuma eleição de 2026 encontrada no TSE");
-  return [...new Set(ids)];
-}
-
-async function listar(cargo, ids) {
-  for (const id of ids) {
-    try {
-      const data = await getJson(`${BASE}/candidatura/listar/${ANO}/${cargo.uf}/${id}/${cargo.cod}/candidatos`);
-      const cands = data.candidatos || [];
-      if (cands.length) return { id, cands };
-    } catch {
-      /* tenta a próxima eleição */
-    }
+/** Parser de CSV do TSE: separador ";", campos entre aspas, codificação latin1. */
+function parseCsv(text) {
+  const rows = [];
+  let row = [], field = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (quoted) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; } else quoted = false;
+      } else field += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === ";") { row.push(field); field = ""; }
+    else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && text[i + 1] === "\n") i++;
+      row.push(field); field = "";
+      if (row.length > 1) rows.push(row);
+      row = [];
+    } else field += ch;
   }
-  return { id: null, cands: [] };
+  if (field || row.length) { row.push(field); if (row.length > 1) rows.push(row); }
+  return rows;
 }
 
-async function baixarFoto(idEleicao, cand, cargo) {
-  const file = `${cargo.db}-${cand.numero}.jpg`;
+/** Lê todos os CSVs (cada um com seu cabeçalho) e devolve objetos por linha. */
+function* records(csvTexts) {
+  for (const text of csvTexts) {
+    const [header, ...rows] = parseCsv(text);
+    if (!header) continue;
+    const idx = Object.fromEntries(header.map((h, i) => [h.trim(), i]));
+    for (const r of rows) yield (col) => (r[idx[col]] ?? "").trim();
+  }
+}
+
+async function baixarCsvs() {
+  const dir = path.join(tmpdir(), "tse-cand");
+  await mkdir(dir, { recursive: true });
+  const zip = path.join(dir, "cand.zip");
+  const res = await fetch(ZIP_URL, { signal: AbortSignal.timeout(120000) });
+  if (!res.ok) throw new Error(`${res.status} ao baixar ${ZIP_URL}`);
+  await writeFile(zip, Buffer.from(await res.arrayBuffer()));
+  const lista = execFileSync("unzip", ["-Z1", zip]).toString().split("\n").map((s) => s.trim());
+  // SP (deputados, senador, governador) + BR/BRASIL (presidente)
+  const alvos = lista.filter((f) => /\.csv$/i.test(f) && /_(SP|BR|BRASIL)\.csv$/i.test(f));
+  if (!alvos.length) throw new Error(`CSV de SP/BR não encontrado no zip: ${lista.join(", ")}`);
+  console.log(`[candidatos] arquivos: ${alvos.join(", ")}`);
+  return alvos.map((f) => new TextDecoder("latin1").decode(execFileSync("unzip", ["-p", zip, f], { maxBuffer: 1 << 30 })));
+}
+
+async function baixarFoto(db, uf, sq, numero) {
+  const file = `${db}-${numero}.jpg`;
   try {
-    const res = await fetch(`${IMG}/${idEleicao}/${cand.id}/${cargo.uf}`, { signal: AbortSignal.timeout(20000) });
-    if (!res.ok) return undefined;
+    const res = await fetch(FOTO_URL(uf, sq), {
+      signal: AbortSignal.timeout(20000),
+      headers: { "user-agent": "Mozilla/5.0 (colinha-chapinha)" },
+    });
+    if (!res.ok || !res.headers.get("content-type")?.startsWith("image")) return undefined;
     await writeFile(path.join(FOTOS, file), Buffer.from(await res.arrayBuffer()));
     return `/data/fotos/${file}`;
   } catch {
@@ -75,36 +93,51 @@ async function baixarFoto(idEleicao, cand, cargo) {
 }
 
 async function main() {
-  if (process.env.SKIP_SYNC) return console.log("[candidatos] SKIP_SYNC definido — mantendo base atual.");
-  const ids = await eleicoes2026();
-  const base = { generatedAt: new Date().toISOString(), source: "TSE — DivulgaCandContas" };
-  await mkdir(FOTOS, { recursive: true });
-  let total = 0;
-  for (const cargo of CARGOS) {
-    const { id, cands } = await listar(cargo, ids);
-    const mapa = {};
-    for (const c of cands) {
-      const numero = String(c.numero ?? "").trim();
-      if (!numero) continue;
-      const entry = { n: String(c.nomeUrna || c.nomeCompleto || "").trim(), p: c.partido?.sigla || "" };
-      if (cargo.fotos && id) entry.f = await baixarFoto(id, c, cargo);
-      mapa[numero] = entry;
-    }
-    base[cargo.db] = mapa;
-    total += Object.keys(mapa).length;
-    console.log(`[candidatos] ${cargo.db}: ${Object.keys(mapa).length}`);
+  const i = process.argv.indexOf("--csv");
+  const csvs = i > -1
+    ? await Promise.all(process.argv.slice(i + 1).map(async (f) => new TextDecoder("latin1").decode(await readFile(f))))
+    : await baixarCsvs();
+
+  const base = { generatedAt: new Date().toISOString(), source: "TSE — dados abertos (consulta_cand_2026)" };
+  const aptos = {}; // prioriza candidatura APTA quando o mesmo número aparece mais de uma vez
+  for (const db of Object.values(CARGOS)) { base[db] = {}; aptos[db] = {}; }
+
+  const fotos = [];
+  for (const get of records(csvs)) {
+    const db = CARGOS[Number(get("CD_CARGO"))];
+    if (!db) continue;
+    const uf = get("SG_UF");
+    if (db === "presidente" ? !["BR", "BRASIL"].includes(uf) : uf !== UF) continue;
+    const numero = get("NR_CANDIDATO");
+    if (!/^\d+$/.test(numero)) continue;
+    const apto = /^APTO/i.test(get("DS_SITUACAO_CANDIDATURA"));
+    if (base[db][numero] && aptos[db][numero] && !apto) continue;
+    base[db][numero] = { n: get("NM_URNA_CANDIDATO") || get("NM_CANDIDATO"), p: get("SG_PARTIDO") };
+    aptos[db][numero] = apto;
+    if (COM_FOTO.has(db)) fotos.push({ db, uf: db === "presidente" ? "BR" : UF, sq: get("SQ_CANDIDATO"), numero });
   }
-  if (!total) throw new Error("TSE respondeu, mas sem candidatos");
+
+  if (i === -1 && fotos.length) {
+    await mkdir(FOTOS, { recursive: true });
+    for (const f of fotos) {
+      const foto = await baixarFoto(f.db, f.uf, f.sq, f.numero);
+      if (foto && base[f.db][f.numero]) base[f.db][f.numero].f = foto;
+    }
+  }
+
+  let total = 0;
+  for (const db of Object.values(CARGOS)) {
+    const n = Object.keys(base[db]).length;
+    total += n;
+    console.log(`[candidatos] ${db}: ${n}`);
+  }
+  if (!total) throw new Error("Nenhum candidato encontrado no arquivo do TSE");
+  await mkdir(path.dirname(OUT), { recursive: true });
   await writeFile(OUT, JSON.stringify(base));
   console.log(`[candidatos] ${total} candidatos gravados em ${path.relative(process.cwd(), OUT)}`);
 }
 
-main().catch(async (err) => {
-  const atual = existsSync(OUT) ? JSON.parse(await readFile(OUT, "utf8")) : null;
-  console.warn(`[candidatos] Falha ao sincronizar com o TSE: ${err.message}`);
-  if (SOFT) {
-    console.warn(`[candidatos] Mantendo a base atual (gerada em ${atual?.generatedAt ?? "nunca"}).`);
-    process.exit(0);
-  }
+main().catch((err) => {
+  console.error(`[candidatos] Falha: ${err.message}`);
   process.exit(1);
 });

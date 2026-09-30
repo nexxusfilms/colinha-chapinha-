@@ -7,7 +7,7 @@ Next.js + React + TypeScript + Tailwind + Lucide + html-to-image.
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm run build      # sincroniza candidatos com o TSE (se possível) e gera o build
+npm run build
 ```
 Na Vercel: importar o repositório (framework **Next.js**), sem configuração extra.
 
@@ -23,9 +23,10 @@ Na Vercel: importar o repositório (framework **Next.js**), sem configuração e
 | Ícone da aba | `app/icon.png` |
 
 ## Base de candidatos (busca por número)
-`scripts/sync-candidates.mjs` baixa a lista oficial do **TSE (DivulgaCandContas)**, a mesma fonte usada por portais como O Tempo,
-e grava `public/data/candidatos-sp-2026.json`. Roda automaticamente no `npm run build` (se o TSE não responder, mantém a base atual).
-Manual: `npm run sync:candidatos`.
+`scripts/sync-candidates.mjs` baixa o arquivo oficial de dados abertos do **TSE** (`consulta_cand_2026.zip`, a mesma base
+que portais como O Tempo usam) e grava `public/data/candidatos-sp-2026.json` (deputados, senadores e governador de SP, e
+presidente). O GitHub Actions (`.github/workflows/candidatos.yml`) roda isso a cada 6 horas e salva no repositório; a
+Vercel publica sozinha em seguida. Para rodar na hora: aba **Actions → Atualizar candidatos (TSE) → Run workflow**.
 
 ## Privacidade
 - A busca por número acontece no navegador, contra um JSON estático: nenhum número digitado é enviado a servidor.

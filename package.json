@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "sync:candidatos": "node scripts/sync-candidates.mjs",
-    "build": "node scripts/sync-candidates.mjs --soft && next build",
+    "build": "next build",
     "start": "next start"
   },
   "dependencies": {
