@@ -1,13 +1,13 @@
 import type { SlateValues } from "@/types/candidate";
-import { recommendedCandidates } from "@/config/candidates";
+import { fixedCandidates } from "@/config/candidates";
 
 const KEY = "minha-colinha-2026";
 
-/** Colinha padrão: apenas o candidato da campanha no campo de Deputado Estadual. */
+/** Colinha padrão: só os candidatos travados (config/candidates.ts) preenchidos. */
 export function defaultSlate(): SlateValues {
   return {
-    federal: "",
-    estadual: recommendedCandidates.estadual?.number ?? "",
+    federal: fixedCandidates.federal?.number ?? "",
+    estadual: fixedCandidates.estadual?.number ?? "",
     senador1: "",
     senador2: "",
     governador: "",
@@ -23,6 +23,7 @@ export function loadSlate(): SlateValues | null {
     const data = JSON.parse(raw);
     const base = defaultSlate();
     for (const k of Object.keys(base) as (keyof SlateValues)[]) {
+      if (fixedCandidates[k]) continue; // campos travados sempre voltam ao padrão
       if (typeof data[k] === "string") base[k] = data[k].replace(/\D/g, "");
     }
     return base;

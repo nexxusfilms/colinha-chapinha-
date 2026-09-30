@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import { Sparkles } from "lucide-react";
 import type { SlateValues, SlotKey } from "@/types/candidate";
-import { recommendedCandidates, slots } from "@/config/candidates";
+import { isFixed, recommendedCandidates, slots } from "@/config/candidates";
 import { dbHasPosition, findCandidate, type CandidateDb } from "@/lib/candidates-db";
 import CandidateCard from "./CandidateCard";
 
@@ -13,7 +13,7 @@ interface Props {
   onFillRecommended: () => void;
 }
 
-const hasRecommended = Object.entries(recommendedCandidates).some(([k, c]) => k !== "estadual" && c);
+const hasRecommended = Object.entries(recommendedCandidates).some(([k, c]) => c && !isFixed(k as SlotKey));
 
 export default function CandidateForm({ values, db, onChange, onFillRecommended }: Props) {
   const refs = useRef<(HTMLInputElement | null)[]>([]);
@@ -21,7 +21,7 @@ export default function CandidateForm({ values, db, onChange, onFillRecommended 
   // Avança para o próximo campo ainda incompleto.
   const next = (i: number) => {
     for (let j = i + 1; j < slots.length; j++) {
-      if (values[slots[j].key].length < slots[j].digits) return refs.current[j]?.focus();
+      if (!isFixed(slots[j].key) && values[slots[j].key].length < slots[j].digits) return refs.current[j]?.focus();
     }
     refs.current[i]?.blur();
   };

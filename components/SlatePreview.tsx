@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import type { SlateValues } from "@/types/candidate";
-import { slots } from "@/config/candidates";
+import { fixedCandidates, slots } from "@/config/candidates";
 import { campaign, legalLine } from "@/config/campaign";
 import { findCandidate, type CandidateDb } from "@/lib/candidates-db";
 
@@ -37,8 +37,9 @@ const SlatePreview = forwardRef<HTMLDivElement, Props>(function SlatePreview({ v
       <ol>
         {slots.map((slot) => {
           const v = values[slot.key];
-          const c = findCandidate(db, slot, v);
-          const isCampaign = slot.key === "estadual" && !!candidate.number && v === candidate.number;
+          const fixed = fixedCandidates[slot.key];
+          const c = fixed ?? findCandidate(db, slot, v);
+          const isCampaign = !!fixed;
           return (
             <li
               key={slot.key}
@@ -49,7 +50,7 @@ const SlatePreview = forwardRef<HTMLDivElement, Props>(function SlatePreview({ v
               <div className="min-w-0">
                 <p className="font-display text-[21px] uppercase leading-tight text-azul">{slot.label}</p>
                 {isCampaign ? (
-                  <p className="font-display text-[20px] uppercase leading-tight text-rosa">{candidate.publicName}</p>
+                  <p className="font-display text-[20px] uppercase leading-tight text-rosa">{fixed.name}</p>
                 ) : (
                   c && <p className="truncate text-[12px] font-semibold uppercase text-slate-600">{c.name} · {c.party}</p>
                 )}

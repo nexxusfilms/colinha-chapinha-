@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import type { SlateValues } from "@/types/candidate";
-import { chapinha, slots } from "@/config/candidates";
+import { chapinha, fixedCandidates, sidneyCruz, slots } from "@/config/candidates";
 import { dbHasPosition, findCandidate, type CandidateDb } from "@/lib/candidates-db";
 import CandidateAvatar from "./CandidateAvatar";
 
@@ -11,8 +11,8 @@ interface Props {
   db: CandidateDb | null;
 }
 
-/** Deputado Estadual fica fixo no candidato da campanha. */
-const fixedFor = (i: number) => (slots[i].key === "estadual" && chapinha.number ? chapinha.number : null);
+/** Campos travados (Sidney e Chapinha) já vêm digitados na urna. */
+const fixedFor = (i: number) => fixedCandidates[slots[i].key]?.number ?? null;
 
 function useBeep() {
   const ctx = useRef<AudioContext | null>(null);
@@ -88,7 +88,8 @@ export default function UrnaSimulator({ values, db }: Props) {
         Treine na urna
       </h2>
       <p className="mt-2 text-slate-700">
-        Vote nos seis cargos na ordem da urna. O Deputado Estadual já está com {chapinha.name}
+        Vote nos seis cargos na ordem da urna. Deputado Federal já vem com {sidneyCruz.name} ({sidneyCruz.number}) e
+        Deputado Estadual com {chapinha.name}
         {chapinha.number ? ` (${chapinha.number})` : ""}.
       </p>
 

@@ -25,6 +25,7 @@ export const sidneyCruz: Candidate = {
   number: "1502",
   party: "MDB",
   position: "Deputado Federal",
+  photo: "/images/sidney-cruz.jpg",
 };
 
 /**
@@ -35,6 +36,17 @@ export const candidates: Partial<Record<DbKey, Record<string, Candidate>>> = {
   estadual: chapinha.number ? { [chapinha.number]: chapinha } : {},
   federal: { [sidneyCruz.number]: sidneyCruz },
 };
+
+/**
+ * Campos travados: já vêm preenchidos e o eleitor não consegue alterar
+ * (nem no formulário, nem no simulador de urna).
+ */
+export const fixedCandidates: Partial<Record<SlotKey, Candidate>> = {
+  federal: sidneyCruz,
+  ...(chapinha.number ? { estadual: chapinha } : {}),
+};
+
+export const isFixed = (key: SlotKey) => !!fixedCandidates[key];
 
 /**
  * Botão "Preencher candidatos sugeridos". Só aparece se houver algum

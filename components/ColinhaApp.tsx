@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Maximize2 } from "lucide-react";
 import type { SlateValues, SlotKey } from "@/types/candidate";
-import { recommendedCandidates } from "@/config/candidates";
+import { isFixed, recommendedCandidates } from "@/config/candidates";
 import { clearSlate, defaultSlate, loadSlate, saveSlate } from "@/lib/storage";
 import { useCandidateDb } from "@/lib/candidates-db";
 import { downloadSlate } from "@/lib/generateSlate";
@@ -36,12 +36,14 @@ export default function ColinhaApp() {
     if (ready) saveSlate(values);
   }, [values, ready]);
 
-  const setField = (key: SlotKey, v: string) => setValues((s) => ({ ...s, [key]: v }));
+  const setField = (key: SlotKey, v: string) => {
+    if (!isFixed(key)) setValues((s) => ({ ...s, [key]: v }));
+  };
 
   const fillRecommended = () =>
     setValues((s) => {
       const next = { ...s };
-      for (const [k, c] of Object.entries(recommendedCandidates)) if (c?.number) next[k as SlotKey] = c.number;
+      for (const [k, c] of Object.entries(recommendedCandidates)) if (c?.number && !isFixed(k as SlotKey)) next[k as SlotKey] = c.number;
       return next;
     });
 
