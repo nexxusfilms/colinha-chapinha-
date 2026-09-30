@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Colinha do Chapinha da Vela – 15026</title>
+<meta name="description" content="Chapinha da Vela 15026 – Deputado Estadual SP – MDB. Leve sua colinha no dia da eleição!">
+<meta property="og:title" content="Vote Chapinha da Vela – 15026">
+<meta property="og:description" content="Deputado Estadual SP – MDB. Salve sua colinha e leve no dia 4 de outubro.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="foto.jpg">
+<meta name="theme-color" content="#0B6B3A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde:#0B6B3A;
+    --verde-esc:#064526;
+    --amarelo:#FFD200;
+    --chama:#FF8A00;
+    --branco:#ffffff;
+    --texto:#10251A;
+    --cinza:#E9EFEA;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--verde-esc);
+    color:var(--texto);
+    min-height:100vh;
+  }
+  .wrap{max-width:460px;margin:0 auto;padding:16px 16px 40px}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 0%,#12894c 0%,var(--verde) 45%,var(--verde-esc) 100%);
+    border-radius:24px;color:var(--branco);text-align:center;
+    padding:24px 20px 20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  .hero::after{ /* faixa amarela */
+    content:"";position:absolute;left:-20%;right:-20%;bottom:-22px;height:78px;
+    background:var(--amarelo);transform:rotate(-4deg);opacity:.95;
+  }
+  .selo{
+    display:inline-block;background:var(--amarelo);color:var(--verde-esc);
+    font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    padding:6px 12px;border-radius:999px;
+  }
+  .foto{
+    position:relative;z-index:1;
+    width:168px;height:168px;margin:18px auto 10px;border-radius:50%;
+    border:6px solid var(--amarelo);background:#0e5a33;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 6px rgba(255,210,0,.25),0 0 40px rgba(255,138,0,.45);
+  }
+  .foto img{width:100%;height:100%;object-fit:cover;display:block}
+  .foto svg{width:70px;height:auto}
+  .nome{
+    position:relative;z-index:1;
+    font-family:Anton,Impact,sans-serif;font-weight:400;
+    font-size:44px;line-height:1;letter-spacing:.01em;text-transform:uppercase;
+    text-shadow:0 3px 0 rgba(0,0,0,.25);
+  }
+  .nome span{color:var(--amarelo)}
+  .cargo{position:relative;z-index:1;margin-top:8px;font-weight:600;font-size:16px;opacity:.95}
+  .numero{
+    position:relative;z-index:2;
+    font-family:Anton,Impact,sans-serif;
+    font-size:92px;line-height:1;margin-top:10px;
+    color:var(--verde-esc);
+    background:var(--amarelo);display:inline-block;padding:4px 22px 8px;border-radius:18px;
+    box-shadow:0 8px 0 var(--chama);
+    letter-spacing:.04em;
+  }
+  .partido{position:relative;z-index:2;margin-top:26px;font-weight:800;color:var(--verde-esc);font-size:15px;letter-spacing:.08em}
+
+  /* ---------- CARDS ---------- */
+  .card{
+    background:var(--branco);border-radius:20px;padding:20px;margin-top:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+  }
+  .card h2{
+    font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;
+    color:var(--verde);font-size:24px;letter-spacing:.02em;margin-bottom:12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card p.sub{font-size:14px;color:#3d5446;margin-bottom:14px;line-height:1.4}
+
+  /* dígitos */
+  .digitos{display:flex;justify-content:center;gap:8px}
+  .digitos b{
+    width:52px;height:66px;border-radius:10px;border:3px solid var(--verde);
+    display:flex;align-items:center;justify-content:center;
+    font-family:Anton,Impact,sans-serif;font-weight:400;font-size:40px;color:var(--verde-esc);
+    background:#F6FBF7;
+  }
+
+  /* urna */
+  .urna{background:#2b2b2b;border-radius:16px;padding:14px;color:#111}
+  .tela{
+    background:#eaeaea;border-radius:8px;padding:12px;min-height:170px;
+    font-family:Arial,Helvetica,sans-serif;position:relative;
+  }
+  .tela .lbl{font-size:11px;color:#444}
+  .tela .cg{font-weight:700;font-size:16px;margin:4px 0 8px;text-align:center}
+  .tela .dg{display:flex;gap:4px;margin-bottom:8px}
+  .tela .dg i{
+    font-style:normal;width:28px;height:34px;border:1px solid #333;background:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;
+  }
+  .tela .dg i.pisca{animation:pisca .8s steps(1) infinite}
+  @keyframes pisca{50%{background:#333}}
+  .tela .info{font-size:13px;line-height:1.5;min-height:40px}
+  .tela .mini{
+    position:absolute;right:10px;top:34px;width:62px;height:76px;border:1px solid #666;
+    background:#cfd8d2;display:none;overflow:hidden;
+  }
+  .tela .mini img{width:100%;height:100%;object-fit:cover}
+  .tela .rodape{border-top:1px solid #999;margin-top:8px;padding-top:6px;font-size:10px;color:#333;display:none}
+  .tela .fim{font-size:56px;font-weight:700;text-align:center;padding-top:40px;display:none;letter-spacing:.05em}
+  .teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+  .teclado button{
+    border:0;border-radius:6px;background:#111;color:#fff;font-size:22px;font-weight:700;
+    padding:12px 0;cursor:pointer;box-shadow:0 3px 0 #000;
+  }
+  .teclado button:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
+  .acoes-urna{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+  .acoes-urna button{border:0;border-radius:6px;font-size:12px;font-weight:800;padding:14px 0;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.6)}
+  .b-branco{background:#fff;color:#000}
+  .b-corrige{background:#E07B24;color:#000}
+  .b-confirma{background:#1E9B4B;color:#000;font-size:14px!important}
+
+  /* ordem */
+  .ordem{list-style:none;counter-reset:o}
+  .ordem li{
+    counter-increment:o;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;
+    padding:10px 0;border-bottom:1px dashed #cfdcd3;
+  }
+  .ordem li:last-child{border-bottom:0}
+  .ordem li::before{
+    content:counter(o);width:30px;height:30px;border-radius:50%;background:var(--cinza);color:var(--verde);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;
+  }
+  .ordem .c{font-weight:600;font-size:15px}
+  .ordem .c small{display:block;font-weight:400;color:#5b7063;font-size:12px}
+  .ordem input{
+    width:92px;border:2px solid #cfdcd3;border-radius:8px;padding:8px;font-size:18px;font-weight:800;
+    text-align:center;letter-spacing:.1em;color:var(--verde-esc);font-family:inherit;
+  }
+  .ordem input:focus{outline:none;border-color:var(--verde)}
+  .ordem li.destaque{background:linear-gradient(90deg,#FFF6C2,#fff);border-radius:12px;padding:10px 8px;border-bottom:0;margin:4px -8px}
+  .ordem li.destaque::before{background:var(--amarelo);color:var(--verde-esc)}
+  .ordem li.destaque .n{
+    font-family:Anton,Impact,sans-serif;font-size:28px;color:var(--verde);letter-spacing:.05em;
+  }
+  .nota{font-size:12px;color:#5b7063;margin-top:10px;line-height:1.4}
+
+  /* botões */
+  .btns{display:grid;gap:10px;margin-top:16px}
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    border:0;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;
+    text-decoration:none;font-family:inherit;
+  }
+  .btn svg{width:22px;height:22px;flex:none}
+  .btn-zap{background:#25D366;color:#063;}
+  .btn-ama{background:var(--amarelo);color:var(--verde-esc)}
+  .btn-bra{background:var(--branco);color:var(--verde-esc)}
+
+  .lembrete{
+    margin-top:16px;border-radius:20px;padding:18px 20px;color:var(--branco);
+    background:linear-gradient(135deg,var(--verde),#0f7f45);border:2px solid rgba(255,210,0,.5);
+    text-align:center;
+  }
+  .lembrete strong{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:26px;color:var(--amarelo);display:block;letter-spacing:.02em}
+  .lembrete p{font-size:14px;margin-top:6px;line-height:1.4}
+
+  footer{color:rgba(255,255,255,.75);font-size:11px;text-align:center;margin-top:22px;line-height:1.6}
+
+  /* ---------- COLINHA IMPRESSA ---------- */
+  #impressa{display:none}
+  @media print{
+    @page{size:A4;margin:10mm}
+    body{background:#fff}
+    .wrap{display:none}
+    #impressa{display:grid;grid-template-columns:repeat(2,1fr);gap:6mm}
+    .tira{
+      border:2px dashed #999;padding:5mm;border-radius:3mm;font-family:Arial,sans-serif;color:#000;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:avoid;
+    }
+    .tira h3{font-size:11pt;text-align:center;margin-bottom:2mm}
+    .tira table{width:100%;border-collapse:collapse;font-size:10pt}
+    .tira td{border-bottom:1px solid #ccc;padding:1.6mm 1mm}
+    .tira td:last-child{text-align:right;font-weight:700;letter-spacing:.08em;font-size:12pt}
+    .tira tr.dest td{background:#FFD200;font-weight:700}
+    .tira tr.dest td:last-child{font-size:15pt}
+    .tira .rod{font-size:6.5pt;color:#444;margin-top:2mm;text-align:center}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="selo">Eleições 2026 · 4 de outubro</span>
+    <div class="foto" id="foto">
+      <!-- vela (mostrada enquanto não houver foto.jpg) -->
+      <svg viewBox="0 0 64 120" aria-hidden="true">
+        <path d="M32 4c8 14 14 22 14 32a14 14 0 0 1-28 0c0-10 6-18 14-32z" fill="#FF8A00"/>
+        <path d="M32 20c4 8 7 12 7 18a7 7 0 0 1-14 0c0-6 3-10 7-18z" fill="#FFD200"/>
+        <rect x="30.5" y="46" width="3" height="10" fill="#333"/>
+        <rect x="16" y="56" width="32" height="60" rx="4" fill="#fff"/>
+        <path d="M16 70c6 4 10-2 16 2s10 2 16-2v8H16z" fill="#F1F1F1"/>
+      </svg>
+    </div>
+    <h1 class="nome">Chapinha<br><span>da Vela</span></h1>
+    <p class="cargo">Deputado Estadual · São Paulo</p>
+    <div class="numero" aria-label="Número 15026">15026</div>
+    <p class="partido">MDB · 15</p>
+  </section>
+
+  <!-- COMO VOTAR -->
+  <section class="card">
+    <h2>Na urna, digite</h2>
+    <div class="digitos" aria-label="1 5 0 2 6">
+      <b>1</b><b>5</b><b>0</b><b>2</b><b>6</b>
+    </div>
+    <p class="sub" style="margin:14px 0 0;text-align:center">e aperte <strong style="color:#1E9B4B">CONFIRMA</strong></p>
+  </section>
+
+  <!-- SIMULADOR -->
+  <section class="card">
+    <h2>Treine na urna</h2>
+    <p class="sub">Digite o número do Chapinha e confirme, igualzinho no dia da eleição.</p>
+    <div class="urna">
+      <div class="tela" id="tela">
+        <div id="votando">
+          <div class="lbl">SEU VOTO PARA</div>
+          <div class="cg">DEPUTADO ESTADUAL</div>
+          <div class="lbl">Número:</div>
+          <div class="dg" id="dg"></div>
+          <div class="info" id="info"></div>
+          <div class="mini" id="mini"></div>
+          <div class="rodape" id="rodape">Aperte a tecla:<br><b>CONFIRMA</b> para CONFIRMAR este voto<br><b>CORRIGE</b> para REINICIAR este voto</div>
+        </div>
+        <div class="fim" id="fim">FIM</div>
+      </div>
+      <div class="teclado" id="teclado"></div>
+      <div class="acoes-urna">
+        <button class="b-branco" data-a="branco">BRANCO</button>
+        <button class="b-corrige" data-a="corrige">CORRIGE</button>
+        <button class="b-confirma" data-a="confirma">CONFIRMA</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDEM DE VOTAÇÃO -->
+  <section class="card">
+    <h2>Sua colinha completa</h2>
+    <p class="sub">Esta é a ordem de votação na urna. O Chapinha já está marcado; preencha os outros números se quiser. Fica salvo no seu celular.</p>
+    <ol class="ordem" id="ordem"></ol>
+    <p class="nota">Pode levar a colinha no papel para a cabine. Celular não entra na cabine de votação.</p>
+    <div class="btns">
+      <button class="btn btn-ama" id="imprimir">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12v5H6zM4 8h16a2 2 0 0 1 2 2v7h-4v5H6v-5H2v-7a2 2 0 0 1 2-2zm4 9v3h8v-3z"/></svg>
+        Imprimir colinha
+      </button>
+    </div>
+  </section>
+
+  <!-- COMPARTILHAR -->
+  <section class="btns">
+    <a class="btn btn-zap" id="zap" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>
+      Mandar no WhatsApp
+    </a>
+    <button class="btn btn-bra" id="compartilhar">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z"/></svg>
+      Compartilhar link
+    </button>
+  </section>
+
+  <section class="lembrete">
+    <strong>Domingo, 4 de outubro</strong>
+    <p>Leve documento com foto (ou o e-Título) e sua colinha.<br>Votação das 8h às 17h (horário de Brasília).</p>
+  </section>
+
+  <footer id="rodape-legal"></footer>
+</div>
+
+<!-- versão impressa: 6 colinhas recortáveis por folha A4 -->
+<div id="impressa"></div>
+
+<script>
+/* ====== CONFIGURAÇÃO DA CAMPANHA ====== */
+const CAMPANHA = {
+  nome: "Chapinha da Vela",
+  numero: "15026",
+  cargo: "Deputado Estadual",
+  uf: "SP",
+  partido: "MDB",
+  // Preencher antes de divulgar (exigência da Justiça Eleitoral para propaganda):
+  cnpj: "",            // ex.: "00.000.000/0001-00"
+  coligacao: "",       // ex.: nome da federação/coligação, se houver
+  foto: "foto.jpg"     // coloque a foto na mesma pasta com este nome
+};
+
+/* ordem de votação na urna – eleições gerais 2026 */
+const ORDEM = [
+  {cargo:"Deputado Federal",   dig:4},
+  {cargo:"Deputado Estadual",  dig:5, fixo:true},
+  {cargo:"Senador – 1ª vaga",  dig:3},
+  {cargo:"Senador – 2ª vaga",  dig:3},
+  {cargo:"Governador",         dig:2},
+  {cargo:"Presidente",         dig:2}
+];
+
+/* ---------- foto ---------- */
+(function(){
+  const img = new Image();
+  img.alt = CAMPANHA.nome;
+  img.onload = () => { const f = document.getElementById('foto'); f.innerHTML=''; f.appendChild(img); };
+  img.src = CAMPANHA.foto;
+})();
+
+/* ---------- colinha (ordem) ---------- */
+const store = {
+  get(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+const ol = document.getElementById('ordem');
+ORDEM.forEach((o,i)=>{
+  const li = document.createElement('li');
+  if(o.fixo){
+    li.className='destaque';
+    li.innerHTML = `<div class="c">${o.cargo}<small>${CAMPANHA.nome} · ${CAMPANHA.partido}</small></div><div class="n">${CAMPANHA.numero}</div>`;
+  }else{
+    li.innerHTML = `<div class="c">${o.cargo}<small>${o.dig} dígitos</small></div>`;
+    const inp = document.createElement('input');
+    inp.inputMode='numeric'; inp.maxLength=o.dig; inp.placeholder='·'.repeat(o.dig);
+    inp.setAttribute('aria-label', 'Número para '+o.cargo);
+    inp.value = store.get('colinha-'+i);
+    inp.addEventListener('input',()=>{ inp.value=inp.value.replace(/\D/g,'').slice(0,o.dig); store.set('colinha-'+i,inp.value); });
+    li.appendChild(inp);
+  }
+  ol.appendChild(li);
+});
+
+/* ---------- impressão ---------- */
+function montaImpressa(){
+  const linhas = ORDEM.map((o,i)=>{
+    const n = o.fixo ? CAMPANHA.numero : (store.get('colinha-'+i) || '_ '.repeat(o.dig).trim());
+    return `<tr class="${o.fixo?'dest':''}"><td>${o.cargo}${o.fixo?' – '+CAMPANHA.nome:''}</td><td>${n}</td></tr>`;
+  }).join('');
+  const rod = rodapeTexto();
+  document.getElementById('impressa').innerHTML = Array(6).fill(
+    `<div class="tira"><h3>MINHA COLINHA · ELEIÇÕES 2026</h3><table>${linhas}</table><div class="rod">${rod}</div></div>`
+  ).join('');
+}
+document.getElementById('imprimir').addEventListener('click',()=>{ montaImpressa(); window.print(); });
+window.addEventListener('beforeprint', montaImpressa);
+
+/* ---------- rodapé legal ---------- */
+function rodapeTexto(){
+  const partes = [`${CAMPANHA.nome} ${CAMPANHA.numero} – ${CAMPANHA.cargo} ${CAMPANHA.uf}`];
+  partes.push(CAMPANHA.coligacao ? `${CAMPANHA.partido} – ${CAMPANHA.coligacao}` : CAMPANHA.partido);
+  if(CAMPANHA.cnpj) partes.push(`CNPJ ${CAMPANHA.cnpj}`);
+  return 'Propaganda eleitoral · ' + partes.join(' · ');
+}
+document.getElementById('rodape-legal').textContent = rodapeTexto();
+
+/* ---------- compartilhar ---------- */
+const msg = `Meu voto para Deputado Estadual é CHAPINHA DA VELA – ${CAMPANHA.numero}! 🕯️\nNa urna digite ${CAMPANHA.numero.split('').join(' ')} e aperte CONFIRMA.\nPega sua colinha aqui: ${location.href}`;
+document.getElementById('zap').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+document.getElementById('compartilhar').addEventListener('click', async ()=>{
+  if(navigator.share){ try{ await navigator.share({title:'Chapinha da Vela 15026', text:msg, url:location.href}); }catch(e){} }
+  else { try{ await navigator.clipboard.writeText(location.href); alert('Link copiado!'); }catch(e){ prompt('Copie o link:', location.href); } }
+});
+
+/* ---------- simulador de urna ---------- */
+const N = CAMPANHA.numero.length;
+let dig = '', estado = 'votando';
+const dgEl = document.getElementById('dg'), info = document.getElementById('info'),
+      mini = document.getElementById('mini'), rodape = document.getElementById('rodape'),
+      votando = document.getElementById('votando'), fim = document.getElementById('fim');
+
+function render(){
+  dgEl.innerHTML = Array.from({length:N},(_,i)=>`<i class="${i===dig.length?'pisca':''}">${dig[i]||''}</i>`).join('');
+  if(dig.length===N){
+    if(dig===CAMPANHA.numero){
+      info.innerHTML = `Nome: <b>${CAMPANHA.nome.toUpperCase()}</b><br>Partido: <b>${CAMPANHA.partido}</b>`;
+      const temFoto = !!document.querySelector('#foto img');
+      mini.style.display = temFoto ? 'block' : 'none';
+      mini.innerHTML = temFoto ? `<img src="${CAMPANHA.foto}" alt="">` : '';
+    }else{
+      info.innerHTML = `<b>NÚMERO ERRADO</b><br>Aperte CORRIGE e digite <b>${CAMPANHA.numero}</b>`;
+      mini.style.display='none';
+    }
+    rodape.style.display='block';
+  }else{
+    info.innerHTML=''; mini.style.display='none'; rodape.style.display='none';
+  }
+}
+function bip(dur){
+  try{
+    const ctx = bip.ctx || (bip.ctx = new (window.AudioContext||window.webkitAudioContext)());
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = 1100; o.type='square'; g.gain.value=.05;
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+function reinicia(){ dig=''; estado='votando'; votando.style.display='block'; fim.style.display='none'; render(); }
+function tecla(k){
+  if(estado==='fim'){ reinicia(); return; }
+  if(dig.length<N){ dig+=k; bip(.06); render(); }
+}
+const tec = document.getElementById('teclado');
+['1','2','3','4','5','6','7','8','9','','0',''].forEach(k=>{
+  const b = document.createElement('button');
+  if(k===''){ b.style.visibility='hidden'; } else { b.textContent=k; b.onclick=()=>tecla(k); }
+  tec.appendChild(b);
+});
+document.querySelectorAll('.acoes-urna button').forEach(b=>b.addEventListener('click',()=>{
+  const a = b.dataset.a;
+  if(a==='corrige'){ bip(.06); reinicia(); }
+  else if(a==='branco'){ info.innerHTML='Vote no <b>'+CAMPANHA.numero+'</b>! 😉'; }
+  else if(a==='confirma' && dig===CAMPANHA.numero){
+    // som característico da urna
+    bip(.08); setTimeout(()=>bip(.08),120); setTimeout(()=>bip(.08),240); setTimeout(()=>bip(.5),360);
+    estado='fim'; votando.style.display='none'; fim.style.display='block';
+    setTimeout(reinicia, 3500);
+  }
+}));
+render();
+</script>
+</body>
+</html>
